@@ -74,7 +74,7 @@ def register(request):
     return Response({
         "token": str(t.digest) + " expires in 5 minutes",
         "message": "You have been successfully registered. Please check your email.",
-    })
+    }, status=201)
 
 @api_view(['POST'])
 def set_user_active(request):
