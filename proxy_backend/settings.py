@@ -171,3 +171,23 @@ STATICFILES_DIRS =[
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+EMAIL_HOST = env('MAIL_HOST')
+
+EMAIL_HOST_USER = env('MAIL_USERNAME')
+
+EMAIL_HOST_PASSWORD = env('MAIL_PASSWORD')
+
+EMAIL_PORT = env('MAIL_PORT')
+
+EMAIL_USE_TLS = True
+
+EMAIL_USE_SSL = False
+
+DEFAULT_FROM_EMAIL = env('MAIL_FROM_ADDRESS')
+
+TWILIO_SSID = env('TWILIO_SSID')
+TWILIO_TOKEN = env('TWILIO_TOKEN')

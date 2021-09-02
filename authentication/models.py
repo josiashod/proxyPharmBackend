@@ -1,9 +1,10 @@
-from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
-from django.contrib.auth.models import Group, Permission
-from safedelete.models import SafeDeleteModel
-from safedelete.models import SOFT_DELETE_CASCADE
+import random
+import string
 
+from django.contrib.auth.models import (AbstractBaseUser, BaseUserManager,
+                                        Group, Permission, PermissionsMixin)
+from django.db import models
+from safedelete.models import SOFT_DELETE_CASCADE, SafeDeleteModel
 
 # Create your models here.
 
@@ -85,6 +86,16 @@ class Token(models.Model):
     digest = models.CharField(max_length= 255, null= True)
     expire_at = models.DateTimeField(null= True)
     confirmed_at = models.DateTimeField(null= True)
+
+    def generate_digest(self, number= True, length= None):
+        if not number and length is None:
+            raise Exception('Function parse error')
+            
+        if number:
+            return random.randint(100000,999999+1)
+        else:
+            return ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(length))
+
 
 class Connection(SafeDeleteModel, AbstractClass):
     ip = models.GenericIPAddressField(null= True)
