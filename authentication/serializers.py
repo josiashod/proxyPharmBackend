@@ -1,12 +1,16 @@
 import re
 from datetime import datetime, timezone
 
+from django.conf import settings
 from django.contrib.auth import authenticate
 from django.db.models import Q
 from rest_framework import serializers
+from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.validators import UniqueValidator
 
+from . import facebook, google
 from .models import *
+from .oauth import register_social_user
 
 
 class LoginSerializer(serializers.Serializer):
@@ -34,12 +38,16 @@ class LoginSerializer(serializers.Serializer):
         
         if person.exists():
             person = person.first()
-            username = User.objects.get(person= person).username
+            user = User.objects.get(person= person)
         elif user.exists():
             user = user.first()
-            username = user.username
 
+        if not user.is_active: 
+            raise serializers.ValidationError('This account is not activated', code="Unactivate")
+
+        username = user.username
         user = authenticate(username=username, password=password)
+
         if not user:
             raise serializers.ValidationError('Invalid username or password', code="Unauthorized")
 
@@ -171,6 +179,7 @@ class CheckUserSerializer(serializers.Serializer):
     last_name = serializers.CharField(required= False, read_only= True)
     email = serializers.EmailField(required= False, read_only= True)
     phone = serializers.CharField(required= False, read_only= True)
+    image = serializers.CharField(required= False, read_only= True)
     is_user = serializers.BooleanField(required= False, read_only= True)
     is_pharmacist = serializers.BooleanField(required= False, read_only= True)
 
@@ -186,13 +195,6 @@ class CheckUserSerializer(serializers.Serializer):
             user = User.objects.get(person= person)
         elif user.exists():
             user = user.first()
-            
-        self.username = user.username
-        self.first_name = user.person.first_name
-        self.last_name = user.person.last_name
-        self.phone = user.person.phone
-        self.is_user = user.person.is_user
-        self.is_pharmacist = user.person.is_pharmacist
 
         return user.username
 
@@ -202,8 +204,58 @@ class CheckUserSerializer(serializers.Serializer):
         attrs['username'] = user.username
         attrs['first_name'] = user.person.first_name
         attrs['last_name'] = user.person.last_name
+        attrs['image'] = user.person.image
         attrs['phone'] = user.person.phone
         attrs['is_user'] = user.person.is_user
         attrs['is_pharmacist'] = user.person.is_pharmacist
         
         return super().validate(attrs)
+
+class FacebookSocialAuthSerializer(serializers.Serializer):
+    """Handles serialization of facebook related data"""
+    auth_token = serializers.CharField()
+
+    def validate_auth_token(self, auth_token):
+        data = facebook.Facebook.validate(auth_token)
+
+        try:
+            email = data['email']
+            first_name = data['given_name']
+            last_name = data['family_name']
+            image = data['picture']['data']['url']
+
+            return register_social_user(
+                email,
+                first_name,
+                last_name,
+                image
+            )
+        except Exception as identifier:
+
+            raise serializers.ValidationError(
+                'The token  is invalid or expired. Please login again.'
+            )
+
+
+class GoogleSocialAuthSerializer(serializers.Serializer):
+    auth_token = serializers.CharField()
+
+    def validate_auth_token(self, auth_token):
+        data = google.Google.validate(auth_token)
+        try:
+            data['sub']
+        except:
+            raise serializers.ValidationError(
+                'The token is invalid or expired. Please login again.'
+            )
+
+        if data['aud'] != getattr(settings, 'GOOGLE_CLIENT_ID'):
+
+            raise AuthenticationFailed('oops, who are you?')
+
+        first_name = data['given_name']
+        last_name = data['family_name']
+        email = data['email']
+        image = data['picture']
+
+        return register_social_user(email, first_name, last_name, image)

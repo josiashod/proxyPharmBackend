@@ -1,7 +1,7 @@
 import time
 from datetime import datetime, timedelta, timezone
-from django.conf import settings
 
+from django.conf import settings
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -27,6 +27,22 @@ def login(request):
         'access_token_expire_in': time.mktime((datetime.utcnow() + getattr(settings, 'SIMPLE_JWT').get('ACCESS_TOKEN_LIFETIME')).timetuple()),
         'refresh_token_expire_in': time.mktime((datetime.utcnow() + getattr(settings, 'SIMPLE_JWT').get('REFRESH_TOKEN_LIFETIME')).timetuple()),
     })
+
+@api_view(['POST'])
+def google_login(request):
+    serializer = GoogleSocialAuthSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    data = serializer.data['auth_token']
+
+    return Response(data)
+
+@api_view(['POST'])
+def facebook_login(request):
+    serializer = FacebookSocialAuthSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    data = serializer.data['auth_token']
+
+    return Response(data)
 
 @api_view(['POST'])
 def register(request):

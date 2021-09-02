@@ -47,6 +47,7 @@ class Person(SafeDeleteModel, AbstractClass):
     phone = models.CharField(max_length= 255, null=True, blank=True, unique=True)
     is_user = models.BooleanField(default=True)
     is_pharmacist = models.BooleanField(default=False)
+    image = models.CharField(max_length= 255, null= True, blank= True, default= None)
 
     def get_full_name(self):
         return f"{ self.first_name } { self.last_name }"
