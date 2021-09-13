@@ -40,7 +40,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     # Local apps:
-    'authentication.apps.AuthConfig',
+    'authentication.apps.AuthentcationConfig',
     'pharmacy.apps.PharmacyConfig',
 
     # django-extensions

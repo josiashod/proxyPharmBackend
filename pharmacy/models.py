@@ -6,14 +6,14 @@ from authentication.models import AbstractClass
 class Pharmacy(SafeDeleteModel, AbstractClass):
     _safedelete_policy = SOFT_DELETE_CASCADE
 
-    name = models.CharField(max_length= 255)
+    name = models.CharField(max_length= 255, unique= True)
     image = models.FilePathField(path="")
     thumbnail_image = models.FilePathField(path="", default="")
-    phone = models.CharField(max_length= 255, null=True, blank=True, unique=True)
+    phone = models.CharField(max_length= 255, null=True, blank=True)
     email = models.EmailField(null=True, blank=True, unique=True)
     website = models.URLField(max_length= 255)
-    longitude = models.FloatField()
-    latitude = models.FloatField()
+    longitude = models.FloatField(unique= True)
+    latitude = models.FloatField(unique= True)
 
 class OnCallPharmacy(SafeDeleteModel, AbstractClass):
     pharmacy = models.ForeignKey(to= Pharmacy, on_delete= models.DO_NOTHING)
@@ -26,3 +26,4 @@ class OnCallPharmacy(SafeDeleteModel, AbstractClass):
 class Pharmacist(SafeDeleteModel, AbstractClass):
     poste = models.CharField(max_length= 255)
     pharmacy = models.ForeignKey(to= Pharmacy, on_delete= models.DO_NOTHING)
+
