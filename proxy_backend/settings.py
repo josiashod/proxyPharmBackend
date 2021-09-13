@@ -41,6 +41,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     # Local apps:
     'authentication.apps.AuthConfig',
+    'pharmacy.apps.PharmacyConfig',
 
     # django-extensions
     'django.contrib.admin',
