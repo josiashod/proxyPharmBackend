@@ -4,9 +4,9 @@ description du projet
 
 1. Clone the project `git clone https://github.com/josiashod/proxyPharmBackend.git`
 
-2. Create virtual environment virtualenv env `python3.8 -m venv venv`
+2. Create virtual environment virtualenv env linux : `python3.8 -m venv venv` windows : `python -m venv venv`
 
-3. Activate virtual environment ` source venv/bin/activate`
+3. Activate virtual environment linux: `source venv/bin/activate` windows: `venv\Scripts\activate.bat`
 
 4. `pip install -r requirements.txt`
 

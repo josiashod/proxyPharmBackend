@@ -1,5 +1,7 @@
 *.py[cod]
 *$py.class
 /venv/
-/.env/
+/env/
+/.env
+*/migrations/
 /__pycache__/

@@ -110,8 +110,8 @@ WSGI_APPLICATION = 'proxy_backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
+DB_CONFIG = {
+    'pgsql': {
         'ENGINE': 'django.db.backends.postgresql',
 
         'HOST': env('DB_HOST'),
@@ -125,7 +125,31 @@ DATABASES = {
         'PASSWORD': env('DB_PASSWORD'),
 
         'ATOMIC_REQUESTS': True
+    },
+    'mysql': {
+        'ENGINE': 'django.db.backends.mysql',
+
+        'HOST': env('DB_HOST'),
+
+        'PORT': env('DB_PORT'),
+
+        'NAME': env('DB_DATABASE'),
+
+        'USER': env('DB_USERNAME'),
+
+        'PASSWORD': env('DB_PASSWORD'),
+
+        'ATOMIC_REQUESTS': True
+    },
+    'sqlite': {
+        'ENGINE': 'django.db.backends.sqlite3',
+
+        'NAME': env('DB_DATABASE'),
     }
+}
+
+DATABASES = {
+    'default': DB_CONFIG[ env('DB_CONNECTION')]
 }
 
 # Password validation
