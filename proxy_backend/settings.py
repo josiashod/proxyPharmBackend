@@ -36,7 +36,7 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG =  env('DEBUG')
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['proxypharma.herokuapp.com/']
 
 
 # Application definition
@@ -118,6 +118,8 @@ WSGI_APPLICATION = 'proxy_backend.wsgi.application'
 DATABASES = {
     'default': dj_database_url.config(default=env('DATABASE_URL'), conn_max_age=600)
 }
+
+DATABASES['default']['ATOMIC_REQUESTS'] = True
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
