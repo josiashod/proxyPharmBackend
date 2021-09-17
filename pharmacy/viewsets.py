@@ -59,4 +59,4 @@ class PharmacyViewSet(viewsets.ModelViewSet):
 def find_nearest_pharmacies(request):
     ip = get_client_ip(request)
     r = request.get('https://freegeoip.app/json/' + ip)
-    return Response(r)
+    return Response(r.json())
