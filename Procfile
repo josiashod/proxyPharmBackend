@@ -1,1 +1,1 @@
-web: gunicorn proxy_backend.wsgi --log-file
+web: gunicorn proxy_backend.wsgi --log-file -
