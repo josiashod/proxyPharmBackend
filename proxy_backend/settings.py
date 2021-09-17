@@ -24,7 +24,7 @@ env = environ.Env(
     DEBUG=(bool, False)
 )
 # reading .env file
-# environ.Env.read_env(os.path.join(BASE_DIR, '/.env'))
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
@@ -33,7 +33,7 @@ env = environ.Env(
 SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -41,12 +41,6 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
-    # Local apps:
-    'authentication.apps.AuthentcationConfig',
-    'pharmacy.apps.PharmacyConfig',
-    'on_call_pharmacy.apps.OnCallPharmacyConfig',
-    'pharmacist.apps.PharmacistConfig',
-
     # django-extensions
     'django.contrib.admin',
     'django.contrib.auth',
@@ -57,7 +51,13 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     
     'rest_framework',
-    'rest_framework_simplejwt'
+    'rest_framework_simplejwt',
+
+    # Local apps:
+    'authentication.apps.AuthentcationConfig',
+    'pharmacy.apps.PharmacyConfig',
+    'on_call_pharmacy.apps.OnCallPharmacyConfig',
+    'pharmacist.apps.PharmacistConfig',
 ]
 
 AUTH_USER_MODEL = 'authentication.User'
