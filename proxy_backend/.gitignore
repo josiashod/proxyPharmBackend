@@ -1,5 +1,0 @@
-*.py[cod]
-*$py.class
-/venv/
-/.env
-/__pycache__/
