@@ -14,7 +14,6 @@ import os
 from datetime import timedelta
 from pathlib import Path
 import dj_database_url
-import django_heroku
 
 import environ
 
