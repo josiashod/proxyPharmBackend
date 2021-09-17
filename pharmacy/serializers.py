@@ -32,7 +32,7 @@ class PharmacySerializer(serializers.ModelSerializer):
 
     # created_at = serializers.DateTimeField(format=settings.DATETIME_FORMAT,required= False)
     # updated_at = serializers.DateTimeField(format=settings.DATETIME_FORMAT,required= False)
-    deleted = serializers.DateTimeField(format=settings.DATETIME_FORMAT, required= False)
+    # deleted = serializers.DateTimeField(format=settings.DATETIME_FORMAT, required= False)
 
     class Meta:
         model = Pharmacy
@@ -48,5 +48,5 @@ class PharmacySerializer(serializers.ModelSerializer):
             'latitude',
             # 'created_at',
             # 'updated_at',
-            'deleted',
+            # 'deleted',
         ]

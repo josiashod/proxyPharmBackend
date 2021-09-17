@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 import os
 from datetime import timedelta
 from pathlib import Path
+import dj_database_url
 
 import environ
 
@@ -21,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 env = environ.Env(
-    DEBUG=(bool, False)
+    DEBUG=(bool, True)
 )
 # reading .env file
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
@@ -33,7 +34,7 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG =  env('DEBUG')
 
 ALLOWED_HOSTS = ['*']
 
@@ -41,6 +42,12 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    # Local apps:
+    'authentication.apps.AuthentcationConfig',
+    'pharmacy.apps.PharmacyConfig',
+    'on_call_pharmacy.apps.OnCallPharmacyConfig',
+    'pharmacist.apps.PharmacistConfig',
+
     # django-extensions
     'django.contrib.admin',
     'django.contrib.auth',
@@ -52,12 +59,6 @@ INSTALLED_APPS = [
     
     'rest_framework',
     'rest_framework_simplejwt',
-
-    # Local apps:
-    'authentication.apps.AuthentcationConfig',
-    'pharmacy.apps.PharmacyConfig',
-    'on_call_pharmacy.apps.OnCallPharmacyConfig',
-    'pharmacist.apps.PharmacistConfig',
 ]
 
 AUTH_USER_MODEL = 'authentication.User'
@@ -114,46 +115,8 @@ WSGI_APPLICATION = 'proxy_backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-DB_CONFIG = {
-    'pgsql': {
-        'ENGINE': 'django.db.backends.postgresql',
-
-        'HOST': env('DB_HOST'),
-
-        'PORT': env('DB_PORT'),
-
-        'NAME': env('DB_DATABASE'),
-
-        'USER': env('DB_USERNAME'),
-
-        'PASSWORD': env('DB_PASSWORD'),
-
-        'ATOMIC_REQUESTS': True
-    },
-    'mysql': {
-        'ENGINE': 'django.db.backends.mysql',
-
-        'HOST': env('DB_HOST'),
-
-        'PORT': env('DB_PORT'),
-
-        'NAME': env('DB_DATABASE'),
-
-        'USER': env('DB_USERNAME'),
-
-        'PASSWORD': env('DB_PASSWORD'),
-
-        'ATOMIC_REQUESTS': True
-    },
-    'sqlite': {
-        'ENGINE': 'django.db.backends.sqlite3',
-
-        'NAME': env('DB_DATABASE'),
-    }
-}
-
 DATABASES = {
-    'default': DB_CONFIG[ env('DB_CONNECTION')]
+    'default': dj_database_url.config(default=env('DATABASE_URL'), conn_max_age=600)
 }
 
 # Password validation

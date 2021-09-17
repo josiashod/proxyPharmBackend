@@ -18,11 +18,11 @@ class PharmacyViewSet(viewsets.ModelViewSet):
 
     def list(self, request):
         serializer = self.get_serializer(self.get_queryset(), many= True)
-        serializer_deleted =  self.get_serializer(Pharmacy.objects.deleted_only(), many= True)
+        # serializer_deleted =  self.get_serializer(Pharmacy.objects.deleted_only(), many= True)
 
         return Response({
             'data': serializer.data,
-            'trashed_data': serializer_deleted.data
+            # 'trashed_data': serializer_deleted.data
         })
 
     # def create(self, request):
@@ -47,10 +47,10 @@ class PharmacyViewSet(viewsets.ModelViewSet):
         """
         Instantiates and returns the list of permissions that this view requires.
         """
-        if self.action in ['list', 'create', 'update', 'partial_update', 'destroy']:
-            permission_classes = [IsAuthenticated, IsAdminUser]
-        else:
-            permission_classes = [AllowAny]
+        # if self.action in ['list', 'create', 'update', 'partial_update', 'destroy']:
+        #     permission_classes = [IsAuthenticated, IsAdminUser]
+        # else:
+        permission_classes = [AllowAny]
 
         return [permission() for permission in permission_classes]
 
