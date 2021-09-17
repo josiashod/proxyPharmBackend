@@ -33,7 +33,7 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('APP_DEBUG')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     # Local apps:
     'authentication.apps.AuthentcationConfig',
     'pharmacy.apps.PharmacyConfig',
+    'on_call_pharmacy.apps.OnCallPharmacyConfig',
+    'pharmacist.apps.PharmacistConfig',
 
     # django-extensions
     'django.contrib.admin',
@@ -51,7 +53,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
-    'safedelete',
     
     'rest_framework',
     'rest_framework_simplejwt'
@@ -171,6 +172,13 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+DATETIME_FORMAT = '%d-%m-%Y %H:%M:%S'
+
+USE_I18N = True
+
+USE_L10N = False
+
+USE_TZ = False
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/

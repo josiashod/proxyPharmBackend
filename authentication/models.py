@@ -4,7 +4,7 @@ import string
 from django.contrib.auth.models import (AbstractBaseUser, BaseUserManager,
                                         Group, Permission, PermissionsMixin)
 from django.db import models
-from safedelete.models import SOFT_DELETE_CASCADE, SafeDeleteModel
+
 
 # Create your models here.
 
@@ -38,8 +38,7 @@ class UserManager(BaseUserManager):
 
         return u
 
-class Person(SafeDeleteModel, AbstractClass):
-    _safedelete_policy = SOFT_DELETE_CASCADE
+class Person(models.Model, AbstractClass):
 
     first_name = models.CharField(max_length= 255)
     last_name = models.CharField(max_length= 255, null=True)
@@ -52,7 +51,7 @@ class Person(SafeDeleteModel, AbstractClass):
     def get_full_name(self):
         return f"{ self.first_name } { self.last_name }"
 
-class User(AbstractBaseUser, PermissionsMixin, AbstractClass):
+class User(AbstractBaseUser, PermissionsMixin, models.Model, AbstractClass):
     username = models.TextField(max_length=254, unique=True)
     person = models.OneToOneField(to= Person, null= True, blank= True, on_delete= models.DO_NOTHING)
 
@@ -98,7 +97,7 @@ class Token(models.Model):
             return ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(length))
 
 
-class Connection(SafeDeleteModel, AbstractClass):
+class Connection(models.Model, AbstractClass):
     ip = models.GenericIPAddressField(null= True)
     device = models.CharField(max_length= 255, null= True)
     location = models.CharField(max_length= 255, null= True)
