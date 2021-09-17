@@ -5,6 +5,7 @@ from .models import Pharmacy
 from .serializers import PharmacySerializer
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from xlib.utils import get_client_ip
+import requests
 
 class PharmacyViewSet(viewsets.ModelViewSet):
     """
