@@ -4,8 +4,10 @@ from rest_framework.response import Response
 from .models import Pharmacy
 from .serializers import PharmacySerializer
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
-from xlib.utils import get_client_ip
+from xlib.utils import get_client_ip, distance
 import requests
+import json
+
 
 class PharmacyViewSet(viewsets.ModelViewSet):
     """
@@ -61,4 +63,13 @@ def find_nearest_pharmacies(request):
     # ip = get_client_ip(request)
     # r = requests.get('https://ipinfo.io/' + ip +"?token=5b0b28296033b7")
     # 6.3654,2.4183
-    return Response("6.3654,2.4183")
+
+    # pharmacies.sort(key= lambda p: distance(6.3654, 2.4183, p['latitude'], p['longitude']))
+
+    pharmacies = Pharmacy.objects.all()
+    pharmacies = sorted(pharmacies, key= lambda p: distance(5.3654, 2.4183, p.latitude, p.longitude))
+
+    return Response({
+        'location': "6.3654,2.4183",
+        'data': PharmacySerializer(pharmacies[0:10], many= True).data
+    })
