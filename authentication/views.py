@@ -81,6 +81,7 @@ def set_user_active(request):
     t = TokenSerializer(data= request.data)
 
     t.is_valid(raise_exception= True)
+    t.save()
 
     # if person.email:
     #     mailer(

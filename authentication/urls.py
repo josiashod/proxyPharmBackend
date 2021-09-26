@@ -16,8 +16,9 @@ urlpatterns = [
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
     # settings
-    path('settings/change_info', change_info, name="settings.info"),
-    path('settings/change_email', change_email, name="settings.email"),
-    path('settings/change_phone', change_phone, name="settings.phone"),
-    path('settings/change_password', change_password, name="settings.password"),
+    path('settings/change_info/', change_info, name="settings.info"),
+    path('settings/change_username/', change_username, name="settings.username"),
+    path('settings/change_email/', change_email, name="settings.email"),
+    path('settings/change_phone/', change_phone, name="settings.phone"),
+    path('settings/change_password/', change_password, name="settings.password"),
 ]

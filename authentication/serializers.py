@@ -180,8 +180,12 @@ class CheckUserSerializer(serializers.Serializer):
     email = serializers.EmailField(required= False, read_only= True)
     phone = serializers.CharField(required= False, read_only= True)
     image = serializers.CharField(required= False, read_only= True)
+    is_active = serializers.BooleanField(required= False, read_only= True)
     is_user = serializers.BooleanField(required= False, read_only= True)
     is_pharmacist = serializers.BooleanField(required= False, read_only= True)
+    last_login = serializers.DateTimeField(required= False, read_only= True)
+    created_at = serializers.DateTimeField(required= False, read_only= True)
+    updated_at = serializers.DateTimeField(required= False, read_only= True)
 
     def validate_username(self, value):
         person = Person.objects.filter(Q(email= value) | Q(phone= value))
@@ -200,14 +204,20 @@ class CheckUserSerializer(serializers.Serializer):
 
     def validate(self, attrs):
         user = User.objects.get(username = attrs.get('username'))
-            
+        
         attrs['username'] = user.username
         attrs['first_name'] = user.person.first_name
         attrs['last_name'] = user.person.last_name
-        attrs['image'] = user.person.image
+        attrs['email'] = user.person.email
         attrs['phone'] = user.person.phone
+        attrs['image'] = user.person.image
+        attrs['is_active'] = user.is_active
         attrs['is_user'] = user.person.is_user
         attrs['is_pharmacist'] = user.person.is_pharmacist
+        attrs['created_at'] = user.created_at
+        attrs['updated_at'] = user.updated_at
+        attrs['last_login'] = user.last_login
+
         
         return super().validate(attrs)
 

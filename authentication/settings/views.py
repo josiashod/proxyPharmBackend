@@ -1,3 +1,4 @@
+from copy import copy
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -10,7 +11,7 @@ from .serializers import *
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def change_password(request):
-    password_serializer = ChangePasswordSerializer(data= request.data)
+    password_serializer = ChangePasswordSerializer(data= request.data, context={'request': request})
     password_serializer.is_valid(raise_exception= True)
     user = request.user
     user.set_password(password_serializer.validated_data['password'])
@@ -21,7 +22,7 @@ def change_password(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def change_info(request):
-    info = UserInfoSerializer(data= request.data)
+    info = UserInfoSerializer(data= request.data, context={'request': request})
     info.is_valid(raise_exception= True)
     info.save()
 
@@ -30,17 +31,26 @@ def change_info(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def change_email(request):
-    email_serializer = ChangeEmailSerializer(data= request.data)
+    email_serializer = ChangeEmailSerializer(data= request.data, context={'request': request})
     email_serializer.is_valid(raise_exception= True)
     email_serializer.save()
 
     return Response({'message': 'Email changed successfully'})
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def change_username(request):
+    username_serializer = ChangeUsernameSerializer(data= request.data, context={'request': request})
+    username_serializer.is_valid(raise_exception= True)
+    username_serializer.save()
+
+    return Response({'message': 'Username changed successfully'})
+
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def change_phone(request):
-    phone_serializer = ChangePhoneSerializer(data= request.data)
+    phone_serializer = ChangePhoneSerializer(data= request.data, context={'request': request})
     phone_serializer.is_valid(raise_exception= True)
     phone_serializer.save()
 

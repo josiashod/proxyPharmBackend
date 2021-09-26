@@ -12,6 +12,7 @@ def mailer(template, data, subject, receiver_email, title= "Proxy pharma"):
     from_email = title
 
     #message
+    html_message = ""
     if template:
         html_message = render_to_string(template, data)
         

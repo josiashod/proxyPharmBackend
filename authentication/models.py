@@ -8,10 +8,6 @@ from django.db import models
 
 # Create your models here.
 
-class AbstractClass():
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(default= None)
-
 class UserManager(BaseUserManager):
     def create_user(self, username, person, password=None):
 
@@ -38,7 +34,7 @@ class UserManager(BaseUserManager):
 
         return u
 
-class Person(models.Model, AbstractClass):
+class Person(models.Model):
 
     first_name = models.CharField(max_length= 255)
     last_name = models.CharField(max_length= 255, null=True)
@@ -47,16 +43,20 @@ class Person(models.Model, AbstractClass):
     is_user = models.BooleanField(default=True)
     is_pharmacist = models.BooleanField(default=False)
     image = models.CharField(max_length= 255, null= True, blank= True, default= None)
+    created_at = models.DateTimeField(auto_now_add= True)
+    updated_at = models.DateTimeField(default= None, null= True)
 
     def get_full_name(self):
         return f"{ self.first_name } { self.last_name }"
 
-class User(AbstractBaseUser, PermissionsMixin, models.Model, AbstractClass):
-    username = models.TextField(max_length=254, unique=True)
+class User(AbstractBaseUser, PermissionsMixin, models.Model):
+    username = models.CharField(max_length=254, unique=True)
     person = models.OneToOneField(to= Person, null= True, blank= True, on_delete= models.DO_NOTHING)
 
     is_active = models.BooleanField(default=True)
     is_superuser = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add= True)
+    updated_at = models.DateTimeField(default= None, null= True)
 
     def has_module_perms(self, admin):
         return True
@@ -97,7 +97,7 @@ class Token(models.Model):
             return ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(length))
 
 
-class Connection(models.Model, AbstractClass):
+class Connection(models.Model):
     ip = models.GenericIPAddressField(null= True)
     device = models.CharField(max_length= 255, null= True)
     location = models.CharField(max_length= 255, null= True)
