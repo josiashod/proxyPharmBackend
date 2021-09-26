@@ -236,7 +236,6 @@ class FacebookSocialAuthSerializer(serializers.Serializer):
                 'The token  is invalid or expired. Please login again.'
             )
 
-
 class GoogleSocialAuthSerializer(serializers.Serializer):
     auth_token = serializers.CharField()
 

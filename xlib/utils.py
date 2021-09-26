@@ -11,8 +11,10 @@ from math import radians, sin, cos, sqrt, asin
 def mailer(template, data, subject, receiver_email, title= "Proxy pharma"):
     from_email = title
 
-    #message 
-    html_message = render_to_string(template, data)
+    #message
+    if template:
+        html_message = render_to_string(template, data)
+        
     message = strip_tags(html_message)
     
     send_mail(

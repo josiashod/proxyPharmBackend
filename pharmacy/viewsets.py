@@ -67,7 +67,7 @@ def find_nearest_pharmacies(request):
     # pharmacies.sort(key= lambda p: distance(6.3654, 2.4183, p['latitude'], p['longitude']))
 
     pharmacies = Pharmacy.objects.all()
-    pharmacies = sorted(pharmacies, key= lambda p: distance(5.3654, 2.4183, p.latitude, p.longitude))
+    pharmacies = sorted(pharmacies, key= lambda p: distance(7.0735578, 2.4749119, p.latitude, p.longitude))
 
     return Response({
         'location': "6.3654,2.4183",

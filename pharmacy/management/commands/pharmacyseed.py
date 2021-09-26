@@ -20,16 +20,17 @@ class Command(BaseCommand):
         for pharmacy in pharmacies:
             phone = pharmacy['tel'] if 'tel' in pharmacy.keys() else None
             try:
-                Pharmacy.objects.create(
-                    name= pharmacy['name'],
-                    image= image_url,
-                    thumbnail_image= thumbnail_image_url,
-                    phone= phone,
-                    website= "",
-                    longitude = pharmacy['longitude'],
-                    latitude = pharmacy['latitude']
-                )
-                self.stdout.write(self.style.SUCCESS('Successfully created pharmacy "%s"' % pharmacy['name']))
+                if 'pharmacie' in pharmacy['name'].lower():
+                    Pharmacy.objects.create(
+                        name= pharmacy['name'],
+                        image= image_url,
+                        thumbnail_image= thumbnail_image_url,
+                        phone= phone,
+                        website= "",
+                        longitude = pharmacy['longitude'],
+                        latitude = pharmacy['latitude']
+                    )
+                    self.stdout.write(self.style.SUCCESS('Successfully created pharmacy "%s"' % pharmacy['name']))
             except:
                 self.stdout.write(self.style.WARNING('The pharmacy "%s" already exist' % pharmacy['name']))
                 pass
