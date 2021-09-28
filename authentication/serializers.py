@@ -210,7 +210,11 @@ class CheckUserSerializer(serializers.Serializer):
         attrs['last_name'] = user.person.last_name
         attrs['email'] = user.person.email
         attrs['phone'] = user.person.phone
-        attrs['image'] = user.person.image
+
+        request = self.context.get('request')
+        image_url = user.person.image.url
+
+        attrs['image'] = request.build_absolute_uri(image_url)
         attrs['is_active'] = user.is_active
         attrs['is_user'] = user.person.is_user
         attrs['is_pharmacist'] = user.person.is_pharmacist

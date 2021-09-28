@@ -1,16 +1,16 @@
 import re
 from datetime import datetime, timedelta, timezone
-
+from django.contrib.sites.models import Site
 from django.conf import settings
 from django.contrib.auth import authenticate
 from django.core import mail
 from django.db.models import Q
 from rest_framework import serializers
-from rest_framework.exceptions import AuthenticationFailed
-from rest_framework.validators import UniqueValidator
 from xlib.utils import mailer, send_message
-
+from django.core.files.storage import default_storage
 from ..models import *
+from django.conf import settings
+import os
 
 
 class ChangePasswordSerializer(serializers.Serializer):
@@ -136,7 +136,6 @@ class ChangeUsernameSerializer(serializers.Serializer):
         #     person.email,
         # )
 
-
 class ChangePhoneSerializer(serializers.Serializer):
     phone = serializers.CharField(required= True)
 
@@ -173,3 +172,43 @@ class ChangePhoneSerializer(serializers.Serializer):
 
         # sending message
         # send_message(person.phone, f"Account: {t.token} est le code de vérification")
+
+class UploadImageFileSerializer(serializers.Serializer):
+    image = serializers.FileField(required= True)
+    class Meta:
+        fields = ['image']
+    
+    def save(self, **kwargs):
+        path = settings.MEDIA_ROOT+ "images/users/"
+
+        dt = datetime.now(timezone.utc)
+        dt = dt.replace(tzinfo= timezone.utc)
+
+        request = self.context['request']
+        current_user = request.user
+        person = current_user.person
+
+        image = self.validated_data['image']
+        _, extension = os.path.splitext(image.name)
+
+        filename = str(current_user.pk) + extension
+
+        try:
+            open(path)
+        except:
+            os.mkdir(path)
+            pass
+
+        with default_storage.open(path + filename, 'wb+') as destination:
+            for chunk in image.chunks():
+                destination.write(chunk)
+
+            destination.close()  # File should be closed only after all chunks are added
+
+        person.image = "images/users/" + filename
+
+        person.updated_at = dt
+        current_user.updated_at = dt
+
+        current_user.save()
+        person.save()

@@ -5,7 +5,6 @@ from django.contrib.auth.models import (AbstractBaseUser, BaseUserManager,
                                         Group, Permission, PermissionsMixin)
 from django.db import models
 
-
 # Create your models here.
 
 class UserManager(BaseUserManager):
@@ -42,7 +41,7 @@ class Person(models.Model):
     phone = models.CharField(max_length= 255, null=True, blank=True, unique=True)
     is_user = models.BooleanField(default=True)
     is_pharmacist = models.BooleanField(default=False)
-    image = models.CharField(max_length= 255, null= True, blank= True, default= None)
+    image = models.FileField(null= True, blank= True, default= None)
     created_at = models.DateTimeField(auto_now_add= True)
     updated_at = models.DateTimeField(default= None, null= True)
 
@@ -95,7 +94,6 @@ class Token(models.Model):
             return random.randint(100000,999999+1)
         else:
             return ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(length))
-
 
 class Connection(models.Model):
     ip = models.GenericIPAddressField(null= True)

@@ -21,4 +21,5 @@ urlpatterns = [
     path('settings/change_email/', change_email, name="settings.email"),
     path('settings/change_phone/', change_phone, name="settings.phone"),
     path('settings/change_password/', change_password, name="settings.password"),
+    path('settings/change_profilepic/', ProfileImage.as_view(), name="settings.profile_picture"),
 ]

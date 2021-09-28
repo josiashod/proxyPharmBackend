@@ -5,8 +5,8 @@ from django.db import models
 class Pharmacy(models.Model):
 
     name = models.CharField(max_length= 255, unique= True)
-    image = models.FilePathField(path="")
-    thumbnail_image = models.FilePathField(path="", default="")
+    image = models.FileField(default=None)
+    thumbnail_image = models.FileField(default=None)
     phone = models.CharField(max_length= 255, null=True, blank=True)
     email = models.EmailField(null=True, blank=True, unique=True)
     website = models.URLField(max_length= 255)

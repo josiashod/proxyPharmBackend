@@ -151,7 +151,7 @@ def set_password(request):
 
 @api_view(['POST'])
 def check_user(request):
-    u = CheckUserSerializer(data= request.data)
+    u = CheckUserSerializer(data= request.data, context={'request': request})
     u.is_valid(raise_exception= True)
     # u.is_valid()
     return Response(u.validated_data)

@@ -1,12 +1,14 @@
 from copy import copy
+
+from django.conf import settings
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.response import Response
-from rest_framework_simplejwt.tokens import RefreshToken
-from xlib.utils import mailer, send_message
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from ..models import *
 from .serializers import *
+
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -46,7 +48,6 @@ def change_username(request):
 
     return Response({'message': 'Username changed successfully'})
 
-
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def change_phone(request):
@@ -56,13 +57,16 @@ def change_phone(request):
 
     return Response({'message': 'Phone changed successfully'})
 
-# def profile_picture(request):
-#     if request.method == 'POST':
-#         image = request.FILES['image']
-#         user = request.user
-#         user.profile_picture = image
-#         user.save()
-#         return Response({'message': 'Profile picture changed successfully'})
+class ProfileImage(APIView):
+    serializer_class = UploadImageFileSerializer
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        serializer = self.serializer_class(data= request.data, context={'request': request})
+        serializer.is_valid(raise_exception= True)
+        serializer.save()
+        return Response(str(request.user.person.image))
+
 
 # def profile_picture_delete(request):
 #     if request.method == 'POST':
