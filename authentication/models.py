@@ -56,6 +56,7 @@ class User(AbstractBaseUser, PermissionsMixin, models.Model):
     is_superuser = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add= True)
     updated_at = models.DateTimeField(default= None, null= True)
+    last_login = models.DateTimeField(default= None, null= True)
 
     def has_module_perms(self, admin):
         return True

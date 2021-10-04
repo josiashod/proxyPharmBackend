@@ -60,19 +60,18 @@ def register(request):
     t.expire_at = dt + timedelta(minutes= 5)
     t.save()
 
-    # if person.email:
-    #     mailer(
-    #         'emails/token.html',
-    #         t,
-    #         "Bienvenu sr proxyPhram",
-    #         person.email,
-    #     )
+    if person.email:
+        mailer(
+            'emails/token.html',
+            { 'token': t},
+            "Token",
+            person.email,
+        )
 
     # elif person.phone:
     #     send_message(person.phone, "test")
 
     return Response({
-        "token": str(t.digest) + " expires in 5 minutes",
         "message": "You have been successfully registered. Please check your email.",
     }, status=201)
 
@@ -81,18 +80,18 @@ def set_user_active(request):
     t = TokenSerializer(data= request.data)
 
     t.is_valid(raise_exception= True)
-    t.save()
+    token = t.save()
 
-    # if person.email:
-    #     mailer(
-    #         'emails/verify_email.html',
-    #         t,
-    #         "Bienvenu sr proxyPhram",
-    #         person.email,
-    #     )
+    if token.user.person.email:
+        mailer(
+            'emails/verify_email.html',
+            { 'token': t},
+            "Bienvenu sur proxyPhram",
+            token.user.person.email,
+        )
 
-    # elif person.phone:
-    #     send_message(person.phone, "test")
+    # elif token.user.person.phone:
+    #     send_message(token.user.person.phone, "test")
 
     return Response({"token": "fais"})
 
@@ -125,13 +124,13 @@ def send_token(request):
     t.expire_at = dt + timedelta(minutes= 5)
     t.save()
 
-    # if person.email:
-    #     mailer(
-    #         'emails/token.html',
-    #         t,
-    #         "Bienvenu sr proxyPhram",
-    #         person.email,
-    #     )
+    if person.email:
+        mailer(
+            'emails/token.html',
+            { 'token': t},
+            "Token",
+            person.email,
+        )
 
     # elif person.phone:
     #     send_message(person.phone, "test")

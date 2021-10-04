@@ -9,22 +9,22 @@ from math import radians, sin, cos, sqrt, asin
 
 
 def mailer(template, data, subject, receiver_email, title= "Proxy pharma"):
-    from_email = title
+    from_email = title + " <" + getattr(settings, 'DEFAULT_FROM_EMAIL') + ">"
 
     #message
-    html_message = ""
+    html_message = None
     if template:
         html_message = render_to_string(template, data)
         
     message = strip_tags(html_message)
     
     send_mail(
-        subject,
-        message,
-        from_email,
-        [receiver_email],
-        fail_silently=False,
-        html_message= html_message
+        subject, # titre du mail
+        message, # message
+        from_email, # email de l'expéditeur
+        [receiver_email], #listes d'email
+        fail_silently= False,
+        html_message= html_message # null
     )
 
 def send_message(receiver_num, text):

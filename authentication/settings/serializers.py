@@ -85,12 +85,12 @@ class ChangeEmailSerializer(serializers.Serializer):
         t.save()
 
         # sending email
-        # mailer(
-        #     None,
-        #     t,
-        #     "Confirmer votre nouveau mail",
-        #     person.email,
-        # )
+        mailer(
+            'emails/token.html',
+            t,
+            "Token",
+            person.email,
+        )
 
 class ChangeUsernameSerializer(serializers.Serializer):
     username = serializers.CharField(required= True)
@@ -129,12 +129,12 @@ class ChangeUsernameSerializer(serializers.Serializer):
         t.save()
 
         # sending email
-        # mailer(
-        #     None,
-        #     t,
-        #     "Confirmer votre nouveau mail",
-        #     person.email,
-        # )
+        mailer(
+            'emails/token.html',
+            t,
+            "Token",
+            person.email,
+        )
 
 class ChangePhoneSerializer(serializers.Serializer):
     phone = serializers.CharField(required= True)
