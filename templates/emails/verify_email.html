@@ -8,8 +8,7 @@
 </head>
 <body>
     <body>
-        Continuez la création de votre compte en procédant à la confirmation de votre adresse email.
-        <a target="_blank" rel="noopener noreferrer" href="{{ request.scheme }}://{{ request.get_host }}{% url 'auth:activation' %}?token={{ token.token }}&email={{ token.user.email }}">Confirmer mon adresse mail</a>
+        Bienvenue à toi Mr/Mme {{ token.user.person.first_name }} sur proxypharma
     </body>
 </body>
 </html>

@@ -86,9 +86,9 @@ class ChangeEmailSerializer(serializers.Serializer):
 
         # sending email
         mailer(
-            None,
+            'emails/token.html',
             t,
-            "Confirmer votre nouveau mail",
+            "Token",
             person.email,
         )
 
@@ -130,9 +130,9 @@ class ChangeUsernameSerializer(serializers.Serializer):
 
         # sending email
         mailer(
-            None,
+            'emails/token.html',
             t,
-            "Confirmer votre nouveau mail",
+            "Token",
             person.email,
         )
 

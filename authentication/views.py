@@ -63,8 +63,8 @@ def register(request):
     if person.email:
         mailer(
             'emails/token.html',
-            t,
-            "Bienvenu sr proxyPhram",
+            { 'token': t},
+            "Token",
             person.email,
         )
 
@@ -72,7 +72,6 @@ def register(request):
     #     send_message(person.phone, "test")
 
     return Response({
-        "token": str(t.digest) + " expires in 5 minutes",
         "message": "You have been successfully registered. Please check your email.",
     }, status=201)
 
@@ -86,8 +85,8 @@ def set_user_active(request):
     if token.user.person.email:
         mailer(
             'emails/verify_email.html',
-            t,
-            "Bienvenu sr proxyPhram",
+            { 'token': t},
+            "Bienvenu sur proxyPhram",
             token.user.person.email,
         )
 
@@ -128,8 +127,8 @@ def send_token(request):
     if person.email:
         mailer(
             'emails/token.html',
-            t,
-            "Bienvenu sr proxyPhram",
+            { 'token': t},
+            "Token",
             person.email,
         )
 
