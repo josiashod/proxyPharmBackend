@@ -17,11 +17,17 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.conf.urls import url
+
+from rest_framework_swagger.views import get_swagger_view
+
+schema_view = get_swagger_view(title='ProyPharma API', url='/api/')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/auth/', include('authentication.urls')),
-    path('api/', include('pharmacy.urls'))
+    path('api/', include('pharmacy.urls')),
+    url(r'^api/documentation/$', schema_view)
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
