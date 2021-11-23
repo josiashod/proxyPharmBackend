@@ -2,7 +2,7 @@ from rest_framework import status, viewsets
 from rest_framework.decorators import api_view, action
 from rest_framework.response import Response
 from .models import Pharmacy
-from .serializers import PharmacySerializer
+from .serializers import LocateSerializer, PharmacySerializer
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from xlib.utils import get_client_ip, distance
 import requests
@@ -59,6 +59,11 @@ class PharmacyViewSet(viewsets.ModelViewSet):
 
 @api_view(['GET'])
 def find_nearest_pharmacies(request):
+    loc = LocateSerializer(data=request.GET)
+    loc.is_valid(raise_exception=True)
+    lat = loc.validated_data['lat']
+    lng = loc.validated_data['lng']
+    
     # ip = get_client_ip(request)
     # r = requests.get('https://ipinfo.io/' + ip +"?token=5b0b28296033b7")
     # 6.3654,2.4183
@@ -66,7 +71,7 @@ def find_nearest_pharmacies(request):
     # pharmacies.sort(key= lambda p: distance(6.3654, 2.4183, p['latitude'], p['longitude']))
 
     pharmacies = Pharmacy.objects.all()
-    pharmacies = sorted(pharmacies, key= lambda p: distance(7.0735578, 2.4749119, p.latitude, p.longitude))
+    pharmacies = sorted(pharmacies, key= lambda p: distance(lat, lng, p.latitude, p.longitude))
 
     return Response({
         'location': "6.3654,2.4183",

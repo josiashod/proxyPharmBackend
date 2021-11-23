@@ -3,6 +3,11 @@ from rest_framework.validators import UniqueValidator
 from .models import *
 from django.conf import settings
 
+
+class LocateSerializer(serializers.Serializer):
+    lat = serializers.FloatField()
+    lng = serializers.FloatField()
+
 class PharmacySerializer(serializers.ModelSerializer):
 
     id = serializers.IntegerField(read_only= True)
