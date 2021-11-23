@@ -45,8 +45,6 @@ INSTALLED_APPS = [
     # Local apps:
     'authentication.apps.AuthentcationConfig',
     'pharmacy.apps.PharmacyConfig',
-    'on_call_pharmacy.apps.OnCallPharmacyConfig',
-    'pharmacist.apps.PharmacistConfig',
 
     # django-extensions
     'django.contrib.admin',

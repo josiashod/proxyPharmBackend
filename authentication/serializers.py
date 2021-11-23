@@ -73,7 +73,6 @@ class RegisterSerializer(serializers.Serializer):
     first_name = serializers.CharField(max_length=100)
     last_name = serializers.CharField(max_length=100)
     password = serializers.CharField(max_length=100)
-    is_pharmacist = serializers.BooleanField(default=False, required= False)
 
     def validate_password(self, value):
         if re.findall(r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!#%*?&]{6,20}$", value):

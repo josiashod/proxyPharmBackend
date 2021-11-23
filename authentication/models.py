@@ -34,13 +34,10 @@ class UserManager(BaseUserManager):
         return u
 
 class Person(models.Model):
-
     first_name = models.CharField(max_length= 255)
     last_name = models.CharField(max_length= 255, null=True)
     email = models.EmailField(null=True, blank=True, unique=True)
     phone = models.CharField(max_length= 255, null=True, blank=True, unique=True)
-    is_user = models.BooleanField(default=True)
-    is_pharmacist = models.BooleanField(default=False)
     image = models.FileField(null= True, blank= True, default= None)
     created_at = models.DateTimeField(auto_now_add= True)
     updated_at = models.DateTimeField(default= None, null= True)
