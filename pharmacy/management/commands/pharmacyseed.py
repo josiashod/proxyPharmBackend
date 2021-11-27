@@ -16,13 +16,12 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         f = open(options['file'])
         pharmacies = json.load(f)
-
         for pharmacy in pharmacies:
             phone = pharmacy['tel'] if 'tel' in pharmacy.keys() else None
             try:
                 if 'pharmacie' in pharmacy['name'].lower():
                     Pharmacy.objects.create(
-                        name= pharmacy['name'],
+                        name= pharmacy['name'].capitalize(),
                         image= image_url,
                         thumbnail_image= thumbnail_image_url,
                         phone= phone,

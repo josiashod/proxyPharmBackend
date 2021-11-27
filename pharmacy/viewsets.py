@@ -1,11 +1,14 @@
+import datetime
+
+from django.db.models.query_utils import Q
 from rest_framework import status, viewsets
-from rest_framework.decorators import api_view, action
+from rest_framework.decorators import action, api_view
+from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
-from .models import Pharmacy
-from .serializers import LocateSerializer, PharmacySerializer
-from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
-from xlib.utils import get_client_ip, distance
-import requests
+from xlib.utils import distance, get_client_ip
+
+from .models import Drug, OnCallPharmacy, Pharmacy
+from .serializers import DrugSerializer, LocateSerializer, PharmacySerializer
 
 
 class PharmacyViewSet(viewsets.ModelViewSet):
@@ -56,24 +59,64 @@ class PharmacyViewSet(viewsets.ModelViewSet):
 
         return [permission() for permission in permission_classes]
 
-
 @api_view(['GET'])
 def find_nearest_pharmacies(request):
-    loc = LocateSerializer(data=request.GET)
-    loc.is_valid(raise_exception=True)
-    lat = loc.validated_data['lat']
-    lng = loc.validated_data['lng']
-    
-    # ip = get_client_ip(request)
-    # r = requests.get('https://ipinfo.io/' + ip +"?token=5b0b28296033b7")
-    # 6.3654,2.4183
+    # loc = LocateSerializer(data=request.GET)
+    # loc.is_valid(raise_exception=True)
+    # lat = loc.validated_data['lat']
+    # lng = loc.validated_data['lng']
+    lat = 6.380182
+    lng = 2.4441915
 
-    # pharmacies.sort(key= lambda p: distance(6.3654, 2.4183, p['latitude'], p['longitude']))
+    pharmacies = PharmacySerializer(Pharmacy.objects.all(), many= True, context={'coord': {'lat': lat, 'lng': lng}}).data
+    pharmacies.sort(key= lambda p: p['distance'])
 
-    pharmacies = Pharmacy.objects.all()
-    pharmacies = sorted(pharmacies, key= lambda p: distance(lat, lng, p.latitude, p.longitude))
+    #returning all the ten oncallpharmcies who are nearest 
+    now = datetime.datetime.now(datetime.timezone.utc)
+    on_call_pharmacies = OnCallPharmacy.objects.filter(Q(end_at__gte= now) & Q(start_at__lte= now))
+    on_call_pharmacies = list(map(lambda p: p.pharmacy, on_call_pharmacies))
+    on_call_pharmacies = PharmacySerializer(on_call_pharmacies, many= True, context={'coord': {'lat': lat, 'lng': lng}}).data
+    on_call_pharmacies.sort(key= lambda p: p['distance'])
 
     return Response({
-        'location': "6.3654,2.4183",
-        'data': PharmacySerializer(pharmacies[0:10], many= True).data
+        'data': {
+            'pharmacies': pharmacies[0:10],
+            'on_call_pharmacies': on_call_pharmacies[0:10]
+        }
     })
+
+@api_view(['GET'])
+def search_pharmacies(request):
+    # loc = LocateSerializer(data=request.GET)
+    # loc.is_valid(raise_exception=True)
+    # lat = loc.validated_data['lat']
+    # lng = loc.validated_data['lng']
+    lat = 6.380182
+    lng = 2.4441915
+
+    if 'q' not in request.GET.keys():
+        return Response({'q':['This field is required']},status= 400)
+    q = request.GET.get('q')
+    if len(q) == 0:
+        return Response({'q':['This field is required']},status= 400)
+
+    
+    pharmacies = PharmacySerializer(Pharmacy.objects.filter(name__icontains= q), many= True, context={'coord': {'lat': lat, 'lng': lng}}).data
+    pharmacies.sort(key= lambda p: p['distance'])
+
+    return Response({
+        'data': pharmacies
+    })
+
+@api_view(['POST'])
+def search_drug(request):
+    drug = DrugSerializer(data= request.data)
+    drug.is_valid(raise_exception= True)
+    drugs = DrugSerializer(Drug.objects.filter(name__icontains= drug.data['name']), many= True).data
+    return Response({
+        'data': drugs
+    })
+
+def find_pharmacy_by_prescription(request):
+
+    return Response()
