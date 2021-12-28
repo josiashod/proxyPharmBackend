@@ -2,7 +2,7 @@ import random
 from datetime import datetime, timedelta, timezone
 
 from django.core.management.base import BaseCommand, CommandError
-from pharmacy.models import OnCallPharmacy, Pharmacy
+from pharmacy.models import Drug, Pharmacy, PharmacyDrug
 
 class Command(BaseCommand):
     help = """This command feed the oncallpharmacy
@@ -10,17 +10,14 @@ class Command(BaseCommand):
     """ 
 
     def handle(self, *args, **options):
-        pharmacies = list(Pharmacy.objects.all())
-        random_pharmacies = random.sample(pharmacies, (len(pharmacies) // 10))
-        dt = datetime.now(timezone.utc)
-        dt = dt.replace(tzinfo= timezone.utc)
-        end_at = dt + timedelta(weeks= 2)
-        for pharmacy in random_pharmacies:
-            OnCallPharmacy.objects.create(
-                pharmacy= pharmacy,
-                start_at= dt,
-                end_at= dt
-            )
+        for pharmacy in Pharmacy.objects.all():
+            drugs = random.sample(list(Drug.objects.all()), 15)
+            for drug in drugs:
+                PharmacyDrug.objects.create(
+                    pharmacy= pharmacy,
+                    drug= drug,
+                    quantity= random.randrange(10,20)
+                )
 
-            self.stdout.write(self.style.SUCCESS('The pharmacy "%s" has been registered' % pharmacy.name))
+            self.stdout.write(self.style.SUCCESS('The pharmacy "%s" has been feeded in drug' % pharmacy.name))
 

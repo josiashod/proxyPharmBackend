@@ -81,27 +81,66 @@ class PharmacySerializer(serializers.ModelSerializer):
             # 'deleted',
         ]
 
-class DrugSerializer(serializers.Serializer):
+class SearchDrugByPharmacySerializer(serializers.Serializer):
+    q = serializers.CharField(required= True)
+    pharmacy_id = serializers.IntegerField(required= True)
+
+    def validate_pharmacy_id(self, value):
+        if not Pharmacy.objects.filter(id= value).exists():
+            raise serializers.ValidationError("Pharmacy not found")
+        return value
+
+class DrugListSerializer(serializers.ListSerializer):
+    def validate(self, attrs):
+        if not Drug.objects.filter(id= attrs.get('id')).exists():
+            raise serializers.ValidationError("Drug not exists")
+        return super().validate(attrs)
+
+class DrugSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(read_only= True)
     name = serializers.CharField(max_length= 255)
     dose = serializers.CharField(max_length= 255, required= False)
     type = serializers.CharField(max_length= 255, required= False)
     chemical_composition = serializers.CharField(max_length= 255, read_only= True, required= False)
     class_of_drug = serializers.CharField(max_length= 255, read_only= True, required= False)
+    quantity = serializers.SerializerMethodField('get_quantity')
 
-# class PharmacyDrugSerializer(serializers.ModelSerializer):
-#     name = serializers.CharField(max_length= 255)
-#     dose = serializers.CharField(max_length= 255, required= False)
-#     type = serializers.CharField(max_length= 255, required= False)
-#     chemical_composition = serializers.CharField(max_length= 255, read_only= True, required= False)
-#     class_of_drug = serializers.CharField(max_length= 255, read_only= True, required= False)
+    def get_quantity(self, drug):
+        return drug.pharmacydrug_set.get(pharmacy__id= self.context.get('pharmacy')).quantity if self.context.get('pharmacy') else None
 
-#     class Meta:
-#         model = PharmacyDrug
-#         fields = [
-#             'name',
-#             'dose',
-#             'type',
-#             'chemical_composition',
-#             'class_of_drug',
-#             'quantity',
-#         ]
+    class Meta:
+        model = Drug
+        list_serializer_class = DrugListSerializer
+        fields = [
+            'id',
+            'name',
+            'dose',
+            'type',
+            'chemical_composition',
+            'class_of_drug',
+            'quantity',
+        ]
+class PharmacyDetailSerializer(serializers.ModelSerializer):
+    drugs = DrugSerializer(many= True, required= False)
+    class Meta:
+        model = Pharmacy
+        fields = [
+            'id',
+            'name',
+            'image',
+            'thumbnail_image',
+            'phone',
+            'email',
+            'website',
+            'longitude',
+            'latitude',
+            # 'distance',
+            # 'on_call',
+            'created_at',
+            'updated_at',
+            'drugs',
+            # 'deleted',
+        ]
+
+class FindPharmaciesByDrugsSerializer(serializers.Serializer):
+    drugs = serializers.ListField(child= DrugSerializer(), required= True)

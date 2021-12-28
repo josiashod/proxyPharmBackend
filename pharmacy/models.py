@@ -14,6 +14,7 @@ class Pharmacy(models.Model):
     latitude = models.FloatField(unique= True)
     created_at = models.DateTimeField(auto_now_add= True)
     updated_at = models.DateTimeField(default= None, null= True)
+    drugs = models.ManyToManyField(to= 'Drug', through= 'PharmacyDrug')
 
 class OnCallPharmacy(models.Model):
     
