@@ -64,12 +64,12 @@ class PharmacyViewSet(viewsets.ModelViewSet):
 
 @api_view(['GET'])
 def find_nearest_pharmacies(request):
-    # loc = LocateSerializer(data=request.GET)
-    # loc.is_valid(raise_exception=True)
-    # lat = loc.validated_data['lat']
-    # lng = loc.validated_data['lng']
-    lat = 6.380182
-    lng = 2.4441915
+    loc = LocateSerializer(data=request.GET)
+    loc.is_valid(raise_exception=True)
+    lat = loc.validated_data['lat']
+    lng = loc.validated_data['lng']
+    # lat = 6.380182
+    # lng = 2.4441915
 
     pharmacies = PharmacySerializer(Pharmacy.objects.all(), many= True, context={'coord': {'lat': lat, 'lng': lng}}).data
     pharmacies.sort(key= lambda p: p['distance'])

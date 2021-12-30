@@ -2,8 +2,8 @@ from django.core.management.base import BaseCommand, CommandError
 from pharmacy.models import Pharmacy
 import json
 
-image_url = "https://awss3bucket-aladecouvertedubenin.s3.eu-central-1.amazonaws.com/1622718034622-pharmacie.jpg"
-thumbnail_image_url = "https://awss3bucket-aladecouvertedubenin.s3.eu-central-1.amazonaws.com/1622718035947-thumbnail_pharmacie.jpg"
+image_url = "https://media.istockphoto.com/photos/pharmacy-interior-picture-id1054780856"
+thumbnail_image_url = "https://media.istockphoto.com/photos/pharmacy-interior-picture-id1054780856"
 
 class Command(BaseCommand):
     help = """This command feed the pharmacy
