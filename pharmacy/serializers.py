@@ -43,8 +43,11 @@ class PharmacySerializer(serializers.ModelSerializer):
     on_call = serializers.SerializerMethodField('set_on_call')
 
     def set_distance(self, pharmacy):
-        coord = self.context.get('coord')
-        return get_distance(coord.get('lat'), coord.get('lng'), pharmacy.latitude, pharmacy.longitude)
+        try:
+            coord = self.context.get('coord')
+            return get_distance(coord.get('lat'), coord.get('lng'), pharmacy.latitude, pharmacy.longitude)
+        except:
+            return None
 
     def set_on_call(self, pharmacy):
         now = datetime.datetime.now(datetime.timezone.utc)
