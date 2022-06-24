@@ -45,7 +45,8 @@ class PharmacySerializer(serializers.ModelSerializer):
     def set_distance(self, pharmacy):
         try:
             if hasattr(pharmacy, 'distance'):
-                return str(float(pharmacy.distance)) + "oui je lai vu"
+                return float(pharmacy.distance)
+
             coord = self.context.get('coord')
             return get_distance(coord.get('lat'), coord.get('lng'), pharmacy.latitude, pharmacy.longitude)
         except:
