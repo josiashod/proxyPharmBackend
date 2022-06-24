@@ -71,7 +71,15 @@ def find_nearest_pharmacies(request):
     # lat = 6.380182
     # lng = 2.4441915
 
-    pharmacies = PharmacySerializer(Pharmacy.objects.all(), many= True, context={'coord': {'lat': lat, 'lng': lng}}).data
+    phar = Pharmacy.objects.raw(f'''
+        SELECT *, ( 3959 * acos( cos( radians({str(lat)}) ) * cos( radians( latitude ) ) * cos( radians(longitude) - radians({str(lng)}) ) + sin( radians({str(lat)}) ) * sin( radians(latitude)))) AS distance
+        from pharmacy_pharmacy
+        HAVING distance < 25 
+        ORDER BY distance 
+        LIMIT 0
+        OFFSET 20
+    ''')
+    pharmacies = PharmacySerializer(phar, many= True, context={'coord': {'lat': lat, 'lng': lng}}).data
     pharmacies.sort(key= lambda p: p['distance'])
 
     #returning all the ten oncallpharmcies who are nearest 
