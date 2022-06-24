@@ -74,7 +74,6 @@ def find_nearest_pharmacies(request):
     phar = Pharmacy.objects.raw(f'''
         SELECT *, ( 3959 * acos( cos( radians({str(lat)}) ) * cos( radians( latitude ) ) * cos( radians(longitude) - radians({str(lng)}) ) + sin( radians({str(lat)}) ) * sin( radians(latitude)))) AS distance
         from pharmacy_pharmacy
-        HAVING distance < 25 
         ORDER BY distance 
         LIMIT 0
         OFFSET 20
