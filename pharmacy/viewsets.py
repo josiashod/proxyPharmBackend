@@ -71,19 +71,27 @@ def find_nearest_pharmacies(request):
     # lat = 6.380182
     # lng = 2.4441915
 
-    phar = Pharmacy.objects.raw(f'''
+    on_call_pharmacies = OnCallPharmacy.objects.filter(Q(end_at__gte= now) & Q(start_at__lte= now)).values_list('pharmacy', flat= True)
+    query = f'''
         SELECT *, ( 3959 * acos( cos( radians({str(lat)}) ) * cos( radians( latitude ) ) * cos( radians(longitude) - radians({str(lng)}) ) + sin( radians({str(lat)}) ) * sin( radians(latitude)))) AS distance
-        from pharmacy_pharmacy
+        FROM pharmacy_pharmacy
         ORDER BY distance 
-    ''')
-    pharmacies = PharmacySerializer(phar, many= True, context={'coord': {'lat': lat, 'lng': lng}}).data
+    '''
+
+    query_oncall = f'''
+        SELECT *, ( 3959 * acos( cos( radians({str(lat)}) ) * cos( radians( latitude ) ) * cos( radians(longitude) - radians({str(lng)}) ) + sin( radians({str(lat)}) ) * sin( radians(latitude)))) AS distance
+        FROM pharmacy_pharmacy
+        WHERE id in {str(on_call_pharmacies)}
+        ORDER BY distance 
+    '''
+    pharmacies = PharmacySerializer(Pharmacy.objects.raw(query), many= True, context={'coord': {'lat': lat, 'lng': lng}}).data
     # pharmacies.sort(key= lambda p: p['distance'])
 
     #returning all the ten oncallpharmcies who are nearest 
     now = datetime.datetime.now(datetime.timezone.utc)
-    on_call_pharmacies = OnCallPharmacy.objects.filter(Q(end_at__gte= now) & Q(start_at__lte= now)).values_list('pharmacy', flat= True)
-    on_call_pharmacies = PharmacySerializer(Pharmacy.objects.filter(id__in= on_call_pharmacies), many= True, context={'coord': {'lat': lat, 'lng': lng}}).data
-    on_call_pharmacies.sort(key= lambda p: p['distance'])
+    # on_call_pharmacies = PharmacySerializer(Pharmacy.objects.filter(id__in= on_call_pharmacies), many= True, context={'coord': {'lat': lat, 'lng': lng}}).data
+    on_call_pharmacies = PharmacySerializer(Pharmacy.objects.raw(query_oncall), many= True, context={'coord': {'lat': lat, 'lng': lng}}).data
+    # on_call_pharmacies.sort(key= lambda p: p['distance'])
 
     return Response({
         'data': {
