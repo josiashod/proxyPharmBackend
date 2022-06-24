@@ -82,7 +82,7 @@ def find_nearest_pharmacies(request):
     query_oncall = f'''
         SELECT *, ( 3959 * acos( cos( radians({str(lat)}) ) * cos( radians( latitude ) ) * cos( radians(longitude) - radians({str(lng)}) ) + sin( radians({str(lat)}) ) * sin( radians(latitude)))) AS distance
         FROM pharmacy_pharmacy
-        WHERE id in {str(list(on_call_pharmacies))}
+        WHERE id in {str(tuple(on_call_pharmacies))}
         ORDER BY distance 
     '''
 
