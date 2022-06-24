@@ -75,11 +75,9 @@ def find_nearest_pharmacies(request):
         SELECT *, ( 3959 * acos( cos( radians({str(lat)}) ) * cos( radians( latitude ) ) * cos( radians(longitude) - radians({str(lng)}) ) + sin( radians({str(lat)}) ) * sin( radians(latitude)))) AS distance
         from pharmacy_pharmacy
         ORDER BY distance 
-        LIMIT 0
-        OFFSET 20
     ''')
     pharmacies = PharmacySerializer(phar, many= True, context={'coord': {'lat': lat, 'lng': lng}}).data
-    pharmacies.sort(key= lambda p: p['distance'])
+    # pharmacies.sort(key= lambda p: p['distance'])
 
     #returning all the ten oncallpharmcies who are nearest 
     now = datetime.datetime.now(datetime.timezone.utc)
